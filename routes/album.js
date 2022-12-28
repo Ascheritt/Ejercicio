@@ -6,10 +6,6 @@ router.post("/", (req,res) =>{
     res.status(200).send(album)
 })
 
-router.get("/", (req,res) =>{
-    res.send(albumRepository.getAll());
-})
-
 
 router.put("/:albumId" , (req,res) =>{
     const { params : {albumId}} = req
@@ -21,6 +17,18 @@ router.put("/:albumId" , (req,res) =>{
         res.status(400).send();
     }
 })
+router.delete('/:albumId', (req, res) => {
+    const { params : { albumId } } = req;
 
+    //Buscamos al paciente
+    const album = albumRepository.getById(albumId);
+
+    // preguntamos si existe el recurso
+    if(!album){
+        return res.status(400).send();
+    }
+    res.status(200).send(album);
+
+})
 
 module.exports = router;

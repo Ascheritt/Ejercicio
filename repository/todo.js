@@ -55,6 +55,12 @@ const todos = [
     }
 ];
 
+const getAll = () => todos;
+
+const getById = id => {return todos.find(todo => todo.id == id)};
 
 
-
+module.exports ={
+    getAll,
+    getById
+}

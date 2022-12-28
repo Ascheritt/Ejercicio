@@ -43,3 +43,12 @@ const photos =[
     }
 ];
 
+const getAll = () => photos;
+
+const getById = id => {return photos.find(photo => photo.id == id)};
+
+
+module.exports ={
+    getAll,
+    getById
+}

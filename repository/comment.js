@@ -106,3 +106,12 @@ const comments =[
     }
 ];
 
+const getAll = () => comments;
+
+const getById = id => {return comments.find(comment => comment.id == id)};
+
+
+module.exports ={
+    getAll,
+    getById
+}
