@@ -59,8 +59,11 @@ const getAll = () => todos;
 
 const getById = id => {return todos.find(todo => todo.id == id)};
 
+const getIdT = userId => {return todos.find(todo => todo.userId == userId)};
+
 
 module.exports ={
     getAll,
-    getById
+    getById,
+    getIdT
 }

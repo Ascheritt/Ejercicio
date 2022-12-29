@@ -41,8 +41,10 @@ const getAll = () => posts;
 
 const getById = id => {return posts.find(post => post.id == id)};
 
+const getIdP = userId => {return posts.find(post => post.userId == userId)};
 
 module.exports ={
     getAll,
-    getById
+    getById,
+    getIdP
 }

@@ -50,11 +50,11 @@ const getAll = () => albums;
 
 const getById = id => {return albums.find(album => album.id == id)};
 
-const getIdU = userId => {return albums.find(album => album.userId == userId)};
+const getIdA = userId => {return albums.find(album => album.userId == userId)};
 
 
 module.exports ={
     getAll,
     getById,
-    getIdU
+    getIdA
 }
