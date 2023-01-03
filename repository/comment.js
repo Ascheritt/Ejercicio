@@ -110,8 +110,11 @@ const getAll = () => comments;
 
 const getById = id => {return comments.find(comment => comment.id == id)};
 
+const getIdC = postId => {return comments.find(comment => comment.postId == postId)};
+
 
 module.exports ={
     getAll,
-    getById
+    getById,
+    getIdC
 }

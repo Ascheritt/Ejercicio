@@ -1,6 +1,7 @@
 const router = require("express").Router();
 
 const postRepository  = require("../repository/post");
+const commentRepository = require("../repository/comment");
 
 router.post("/", (req,res) =>{
     const { body : post } = req;
@@ -32,6 +33,18 @@ router.delete('/:postId', (req, res) => {
     }
     res.status(200).send(post);
 
+})
+
+//
+
+router.get("/:postId/comments", (req,res) =>{
+    const { params : {postId}} = req
+    const comment = commentRepository.getIdC(postId);
+    //si es distinto de vacio 
+    if(!comment){
+        return res.status(400).send();
+    }
+    res.status(200).send(comment);
 })
 
 module.exports = router;

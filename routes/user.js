@@ -106,7 +106,7 @@ router.get("/:userId/todos", (req,res) =>{
         return res.status(400).send();
     }
     res.status(200).send(todo);
-    console.log(todoRepository);
+    console.log(todo);
 })
 
 //--------------------------
