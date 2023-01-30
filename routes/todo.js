@@ -1,40 +1,57 @@
-/* eslint-disable consistent-return */
-const router = require('express').Router()
+const router = require("express").Router();
+const ValidationError = require('../core/exceptions')
+const todoValidator = require('../validators/todo');
+const todoRepository  = require("../repository/todo");
 
-const todoRepository = require('../repository/todo')
+router.post('/', async (req, res) => {
+    const { body : todo } = req;
 
-router.post('/', (req, res) => {
-  const { body: todo } = req
+    try {
+        todoValidator.savetodo(todo);
+        newTodo = await todoRepository.savetodo(todo);
+        res.status(201).send(newTodo);
+    } catch(error) {
+        // Si es error de validacion, devolvemos 400
+        if(error instanceof ValidationError) {
+            res.status(400).send({error : error.message})
+            return
+        }
+        // Cualquier otro error, es 500
+        console.log(error)
+        res.status(500).send()
+    }
+});
 
-  res.status(200).send(todo)
+router.put('/:todoId', async (req, res) => {
+    const { params : { todoId } } = req;
+
+    // Buscamos al paciente
+    const todo = await todoRepository.todoById(todoId);
+
+    // Preguntamos si existe el recurso
+    if(todo) {
+        // Junto con la data, podemos indicar un codigo HTTP de respuesta
+        res.status(200).send(todo);
+    } else {
+        res.status(404).send();
+    }
 })
 
-router.put('/:todoId', (req, res) => {
-  const { params: { todoId } } = req
+router.delete('/:todoId', async (req, res) => {
+    const { params : { todoId } } = req;
 
-  // Buscamos al paciente
-  const todo = todoRepository.getById(todoId)
+    // Buscamos al todo
+    const todo = await todoRepository.todoById(todoId);
 
-  // preguntamos si existe el recurso
-  if (!todo) {
-    return res.status(400).send()
-  }
+    // Preguntamos si existe el recurso
+    if(todo) {
+        const todoRemoved = await todoRepository.delete(todoId);
+        // Junto con la data, podemos indicar un codigo HTTP de respuesta
+        res.status(200).send(todoRemoved);
+    } else {
+        res.status(404).send();
+    }
 
-  res.status(200).send(todo)
 })
 
-router.delete('/:todoId', (req, res) => {
-  const { params: { todoId } } = req
-
-  // Buscamos al paciente
-  const todo = todoRepository.getById(todoId)
-
-  // preguntamos si existe el recurso
-  if (!todo) {
-    return res.status(400).send()
-  }
-
-  res.status(200).send(todo)
-})
-
-module.exports = router
+module.exports = router;

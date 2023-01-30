@@ -1,68 +1,47 @@
-const todos = [
-  {
-    userId: 1,
-    id: 1,
-    title: 'delectus aut autem',
-    completed: false
-  },
-  {
-    userId: 1,
-    id: 2,
-    title: 'quis ut nam facilis et officia qui',
-    completed: false
-  },
-  {
-    userId: 1,
-    id: 3,
-    title: 'fugiat veniam minus',
-    completed: false
-  },
-  {
-    userId: 2,
-    id: 21,
-    title: 'suscipit repellat esse quibusdam voluptatem incidunt',
-    completed: false
-  },
-  {
-    userId: 2,
-    id: 22,
-    title: 'distinctio vitae autem nihil ut molestias quo',
-    completed: true
-  },
-  {
-    userId: 2,
-    id: 23,
-    title: 'et itaque necessitatibus maxime molestiae qui quas velit',
-    completed: false
-  },
-  {
-    userId: 3,
-    id: 41,
-    title: 'aliquid amet impedit consequatur aspernatur placeat eaque fugiat suscipit',
-    completed: false
-  },
-  {
-    userId: 3,
-    id: 42,
-    title: 'rerum perferendis error quia ut eveniet',
-    completed: false
-  },
-  {
-    userId: 3,
-    id: 43,
-    title: 'tempore ut sint quis recusandae',
-    completed: true
+const { conectar } = require('./conexion')
+
+const savetodo = async ({ userId, title, completed }) => {
+    const conexion = await conectar()
+    const query = `
+          INSERT INTO todos
+              (userId, title, completed)
+          VALUES
+              ($1, $2, $3)
+          RETURNING *
+      `
+    const values = [userId, title, completed]
+    const result = await conexion.query(query, values)
+    conexion.release()
+    return result.rows[0]
   }
-]
 
-const getAll = () => todos
+const todoById = async (id) => {
+    const conexion = await conectar();
+    const query = `
+        SELECT *
+        FROM
+        todos
+        WHERE id = $1
+    `;
+    const { rows : [todo] } = await conexion.query(query, [id]);
+    conexion.release();
+    return todo;
+};
 
-const getById = id => { return todos.find(todo => todo.id === id) }
+const deletetodo = async (id) => {
+    const conexion = await conectar();
+    const query = `
+        UPDATE todos
+        WHERE id = $1
+        RETURNING *
+    `;
+    const result = await conexion.query(query, [id]);
+    conexion.release();
+    return result.rows[0];
+}
 
-const getIdT = userId => { return todos.find(todo => todo.userId === userId) }
-
-module.exports = {
-  getAll,
-  getById,
-  getIdT
+module.exports ={
+    savetodo,
+    todoById,
+    deletetodo
 }

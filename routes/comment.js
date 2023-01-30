@@ -1,40 +1,58 @@
-/* eslint-disable consistent-return */
-const router = require('express').Router()
+const router = require("express").Router();
+const ValidationError = require('../core/exceptions')
+const commentValidator = require('../validators/comment');
+const commentRepository  = require("../repository/comment");
 
-const commentRepository = require('../repository/comment')
+router.post('/', async (req, res) => {
+    const { body : comment } = req;
 
-router.post('/', (req, res) => {
-  const { body: comment } = req
+    try {
+        commentValidator.savecomment(comment);
+        newComment = await commentRepository.savecomment(comment);
+        res.status(201).send(newComment);
+    } catch(error) {
+        // Si es error de validacion, devolvemos 400
+        if(error instanceof ValidationError) {
+            res.status(400).send({error : error.message})
+            return
+        }
 
-  res.status(200).send(comment)
+        // Cualquier otro error, es 500
+        console.log(error)
+        res.status(500).send()
+    }
+});
+
+router.put('/:commentId', async (req, res) => {
+    const { params : { commentId } } = req;
+
+    // Buscamos al paciente
+    const comment = await commentRepository.commentById(commentId);
+
+    // Preguntamos si existe el recurso
+    if(comment) {
+        // Junto con la data, podemos indicar un codigo HTTP de respuesta
+        res.status(200).send(comment);
+    } else {
+        res.status(404).send();
+    }
 })
 
-router.put('/:commentId', (req, res) => {
-  const { params: { commentId } } = req
+router.delete('/:commentId', async (req, res) => {
+    const { params : { commentId } } = req;
 
-  // Buscamos al paciente
-  const comment = commentRepository.getById(commentId)
+    // Buscamos al comment
+    const comment = await commentRepository.commentById(commentId);
 
-  // preguntamos si existe el recurso
-  if (!comment) {
-    return res.status(400).send()
-  }
+    // Preguntamos si existe el recurso
+    if(comment) {
+        const commentRemoved = await commentRepository.delete(commentId);
+        // Junto con la data, podemos indicar un codigo HTTP de respuesta
+        res.status(200).send(commentRemoved);
+    } else {
+        res.status(404).send();
+    }
 
-  res.status(200).send(comment)
 })
 
-router.delete('/:commentId', (req, res) => {
-  const { params: { commentId } } = req
-
-  // Buscamos al paciente
-  const comment = commentRepository.getById(commentId)
-
-  // preguntamos si existe el recurso
-  if (!comment) {
-    return res.status(400).send()
-  }
-
-  res.status(200).send(comment)
-})
-
-module.exports = router
+module.exports = router;

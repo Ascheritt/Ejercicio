@@ -1,42 +1,38 @@
 const ValidationError = require('../core/exceptions')
 
 const save = user => {
-  let { nombres, apellidos, edad } = user
+    let {name, username, email, address_id, company_id, phone, website} = user;
 
-  // Limpieza basica
-  nombres = nombres.trim()
-  apellidos = apellidos.trim()
+    name = name.trim();
+    username = username.trim();
+    email = email.trim();
+    phone = phone.trim();
+    website = website.trim();
 
-  // Nombres
-  if (nombres.split(' ').length !== 2) {
-    throw new ValidationError('Debe contener dos nombres')
-  }
-
-  if (nombres.match(/\d/g) !== null) {
-    throw new ValidationError('El nombre debe contener solo letras')
-  }
-
-  // Apellidos
-  if (apellidos.split(' ').length !== 2) {
-    throw new ValidationError('Debe contener dos apellidos')
-  }
-
-  if (apellidos.match(/\d/g) !== null) {
-    throw new ValidationError('Los apellidos deben contener solo letras')
-  }
-
-  // Edad
-  if (Number.isInteger(edad)) {
-    if (edad < 0) {
-      throw new ValidationError('La edad debe ser positiva o 0')
+    // Nombres
+    if(name.length === 0 ) {
+        throw new ValidationError("Debe contener un name")
     }
-  } else if (edad.match(/\D/g) !== null) {
-    throw new ValidationError('La edad debe ser un entero')
-  } else if (parseInt(edad, 10) < 0) {
-    throw new ValidationError('La edad debe ser positiva o 0')
-  }
+
+    if(username.length === 0 ) {
+        throw new ValidationError("Debe contener un username")
+    }
+
+    if(email.length === 0 ) {
+        throw new ValidationError("Debe contener un email")
+    }
+
+    if(phone.length === 0 ) {
+        throw new ValidationError("Debe contener un phone")
+    }
+
+    if(website.length === 0 ) {
+        throw new ValidationError("Debe contener un website")
+    }
+
+
 }
 
 module.exports = {
-  save
-}
+    save
+} 
